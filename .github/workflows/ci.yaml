@@ -192,7 +192,6 @@ jobs:
           SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
         with:
           image: quiz/frontend
-          args: --file=Dockerfile
           command: monitor
 
       - name: Upload result to GitHub Code Scanning
@@ -247,7 +246,6 @@ jobs:
           SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
         with:
           image: quiz/backend
-          args: --file=Dockerfile
           command: monitor
 
       - name: Upload result to GitHub Code Scanning
