@@ -111,6 +111,8 @@ jobs:
         working-directory: ./quiz-app
     permissions:
       actions: read
+      security-events: write
+      contents: read
     steps:
       - uses: actions/checkout@master
       - name: Run Snyk to check for vulnerabilities
@@ -147,6 +149,8 @@ jobs:
         working-directory: ./backend
     permissions:
       actions: read
+      security-events: write
+      contents: read
     steps:
       - uses: actions/checkout@master
       - name: Run Snyk to check for vulnerabilities
