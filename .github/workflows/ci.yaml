@@ -121,11 +121,11 @@ jobs:
         env:
           SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
         with:
-          args: --sarif --sarif-file-output=snyk.sarif
+          args: --sarif --sarif-file-output=frontend-code-scanning.sarif
       - name: Upload result to GitHub Code Scanning
         uses: github/codeql-action/upload-sarif@main
         with:
-          sarif_file: snyk.sarif
+          sarif_file: frontend-code-scanning.sarif
 
       - name: Install Snyk CLI
         uses: snyk/actions/setup@master
@@ -159,11 +159,11 @@ jobs:
         env:
           SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
         with:
-          args: --sarif --sarif-file-output=./snyk.sarif
+          args: --sarif --sarif-file-output=backend-code-scanning.sarif
       - name: Upload result to GitHub Code Scanning
         uses: github/codeql-action/upload-sarif@main
         with:
-          sarif_file: snyk.sarif
+          sarif_file: backend-code-scanning.sarif
 
       - name: Install Snyk CLI
         uses: snyk/actions/setup@master
@@ -280,6 +280,10 @@ jobs:
   k8s-manifest-scan:
     needs: [backend-security, frontend-security]
     runs-on: ubuntu-latest
+    permissions:
+      actions: read
+      security-events: write
+      contents: read
     steps:
       - uses: actions/checkout@v4
       - name: Run Snyk to check Kubernetes manifest file for issues
@@ -288,4 +292,8 @@ jobs:
           SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
         with:
           file: kubernetes-manifest/
-          args: --severity-threshold=high
+          args: --sarif --sarif-file-output=manifest.sarif
+      - name: Upload result to GitHub Code Scanning
+        uses: github/codeql-action/upload-sarif@main
+        with:
+          sarif_file: manifest.sarif
