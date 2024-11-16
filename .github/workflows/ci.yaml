@@ -184,14 +184,14 @@ jobs:
         uses: aws-actions/amazon-ecr-login@v2
 
       - name: Build image
-        run: docker build -t ${{ secrets.ECR_FRONTEND_URI }}:latest .
+        run: docker build -t quiz/frontend .
 
       - name: Run Snyk to check Docker images for vulnerabilities
         uses: snyk/actions/docker@master
         env:
           SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
         with:
-          image: ${{ secrets.ECR_FRONTEND_URI }}:latest
+          image: quiz/frontend
           args: --file=Dockerfile
           command: monitor
 
@@ -199,6 +199,9 @@ jobs:
         uses: github/codeql-action/upload-sarif@v2
         with:
           sarif_file: snyk.sarif
+
+      - name: Tag image
+        run: docker tag quiz/frontend:latest ${{ secrets.ECR_FRONTEND_URI }}:latest
 
       - name: Push image
         run: docker push ${{ secrets.ECR_FRONTEND_URI }}:latest
@@ -236,14 +239,14 @@ jobs:
         uses: aws-actions/amazon-ecr-login@v2
 
       - name: Build image
-        run: docker build -t ${{ secrets.ECR_BACKEND_URI }}:latest .
+        run: docker build -t quiz/backend .
 
       - name: Run Snyk to check Docker images for vulnerabilities
         uses: snyk/actions/docker@master
         env:
           SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
         with:
-          image: ${{ secrets.ECR_BACKEND_URI }}:latest
+          image: quiz/backend
           args: --file=Dockerfile
           command: monitor
 
@@ -251,6 +254,9 @@ jobs:
         uses: github/codeql-action/upload-sarif@v2
         with:
           sarif_file: snyk.sarif
+
+      - name: Tag image
+        run: docker tag quiz/backend:latest ${{ secrets.ECR_BACKEND_URI }}:latest
 
       - name: Push image
         run: docker push ${{ secrets.ECR_BACKEND_URI }}:latest
