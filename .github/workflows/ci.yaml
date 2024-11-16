@@ -194,11 +194,6 @@ jobs:
           image: quiz/frontend
           command: monitor
 
-      - name: Upload result to GitHub Code Scanning
-        uses: github/codeql-action/upload-sarif@v2
-        with:
-          sarif_file: snyk.sarif
-
       - name: Tag image
         run: docker tag quiz/frontend:latest ${{ secrets.ECR_FRONTEND_URI }}:latest
 
@@ -247,11 +242,6 @@ jobs:
         with:
           image: quiz/backend
           command: monitor
-
-      - name: Upload result to GitHub Code Scanning
-        uses: github/codeql-action/upload-sarif@v2
-        with:
-          sarif_file: snyk.sarif
 
       - name: Tag image
         run: docker tag quiz/backend:latest ${{ secrets.ECR_BACKEND_URI }}:latest
