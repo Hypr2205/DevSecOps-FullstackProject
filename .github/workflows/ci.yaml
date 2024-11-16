@@ -162,6 +162,9 @@ jobs:
   frontend-image:
     needs: frontend-security
     runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ./quiz-app
     permissions:
       contents: read
       security-events: write
@@ -218,6 +221,9 @@ jobs:
   backend-image:
     needs: backend-security
     runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ./backend
     permissions:
       contents: read
       security-events: write
@@ -241,7 +247,7 @@ jobs:
         run: |
           IMAGE_TAG=latest
           REPOSITORY_URI= ${{ secrets.ECR_BACKEND_URI }} 
-          docker build -t $REPOSITORY_URI:$IMAGE_TAG .
+          docker build . -t $REPOSITORY_URI:$IMAGE_TAG
           docker push $REPOSITORY_URI:$IMAGE_TAG
 
       - name: Run Trivy vulnerability scanner
