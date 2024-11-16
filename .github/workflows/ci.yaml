@@ -186,6 +186,20 @@ jobs:
       - name: Build image
         run: docker build -t ${{ secrets.ECR_FRONTEND_URI }}:latest .
 
+      - name: Run Snyk to check Docker images for vulnerabilities
+        uses: snyk/actions/docker@master
+        env:
+          SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
+        with:
+          image: ${{ secrets.ECR_FRONTEND_URI }}:latest
+          args: --file=Dockerfile
+          command: monitor
+
+      - name: Upload result to GitHub Code Scanning
+        uses: github/codeql-action/upload-sarif@v2
+        with:
+          sarif_file: snyk.sarif
+
       - name: Push image
         run: docker push ${{ secrets.ECR_FRONTEND_URI }}:latest
 
@@ -196,27 +210,6 @@ jobs:
       #     format: "sarif"
       #     output: "trivy-results.sarif"
       #     severity: "CRITICAL,HIGH"
-
-      - name: Install Snyk CLI
-        uses: snyk/actions/setup@master
-        with:
-          snyk-token: ${{ secrets.SNYK_TOKEN }}
-
-      - name: Snyk Authenticate
-        run: snyk auth ${{ secrets.SNYK_TOKEN }}
-
-      - name: Snyk Container monitor
-        run: snyk container monitor ${{ secrets.ERC_FRONTEND_URI }}:latest --file=Dockerfile
-        working-directory: ./quiz-app
-
-      - name: Run Snyk to check for vulnerabilities in the Docker image
-        uses: snyk/actions/docker@master
-        with:
-          image: ${{ secrets.ERC_FRONTEND_URI }}:latest
-          args: --file=quiz-app/Dockerfile --severity-threshold=high
-        env:
-          SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
-        continue-on-error: true
 
   backend-image:
     needs: backend-security
@@ -245,6 +238,20 @@ jobs:
       - name: Build image
         run: docker build -t ${{ secrets.ECR_BACKEND_URI }}:latest .
 
+      - name: Run Snyk to check Docker images for vulnerabilities
+        uses: snyk/actions/docker@master
+        env:
+          SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
+        with:
+          image: ${{ secrets.ECR_BACKEND_URI }}:latest
+          args: --file=Dockerfile
+          command: monitor
+
+      - name: Upload result to GitHub Code Scanning
+        uses: github/codeql-action/upload-sarif@v2
+        with:
+          sarif_file: snyk.sarif
+
       - name: Push image
         run: docker push ${{ secrets.ECR_BACKEND_URI }}:latest
 
@@ -255,27 +262,6 @@ jobs:
       #     format: "sarif"
       #     output: "trivy-results.sarif"
       #     severity: "CRITICAL,HIGH"
-
-      - name: Install Snyk CLI
-        uses: snyk/actions/setup@master
-        with:
-          snyk-token: ${{ secrets.SNYK_TOKEN }}
-
-      - name: Snyk Authenticate
-        run: snyk auth ${{ secrets.SNYK_TOKEN }}
-
-      - name: Snyk Container monitor
-        run: snyk container monitor ${{ secrets.ERC_BACKEND_URI }}:latest --file=Dockerfile
-        working-directory: ./backend
-
-      - name: Run Snyk to check for vulnerabilities in the Docker image
-        uses: snyk/actions/docker@master
-        with:
-          image: ${{ secrets.ERC_BACKEND_URI }}:latest
-          args: --file=backend/Dockerfile --severity-threshold=high
-        env:
-          SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
-        continue-on-error: true
 
   k8s-manifest-scan:
     needs: [backend-security, frontend-security]
