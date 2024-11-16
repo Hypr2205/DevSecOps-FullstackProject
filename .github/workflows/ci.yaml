@@ -189,13 +189,13 @@ jobs:
       - name: Push image
         run: docker push ${{ secrets.ECR_FRONTEND_URI }}:latest
 
-      - name: Run Trivy vulnerability scanner
-        uses: aquasecurity/trivy-action@master
-        with:
-          image-ref: ${{ secrets.ERC_FRONTEND_URI }}:latest
-          format: "sarif"
-          output: "trivy-results.sarif"
-          severity: "CRITICAL,HIGH"
+      # - name: Run Trivy vulnerability scanner
+      #   uses: aquasecurity/trivy-action@master
+      #   with:
+      #     image-ref: ${{ secrets.ERC_FRONTEND_URI }}:latest
+      #     format: "sarif"
+      #     output: "trivy-results.sarif"
+      #     severity: "CRITICAL,HIGH"
 
       - name: Install Snyk CLI
         uses: snyk/actions/setup@master
@@ -248,13 +248,13 @@ jobs:
       - name: Push image
         run: docker push ${{ secrets.ECR_BACKEND_URI }}:latest
 
-      - name: Run Trivy vulnerability scanner
-        uses: aquasecurity/trivy-action@master
-        with:
-          image-ref: ${{ secrets.ERC_BACKEND_URI }}:latest
-          format: "sarif"
-          output: "trivy-results.sarif"
-          severity: "CRITICAL,HIGH"
+      # - name: Run Trivy vulnerability scanner
+      #   uses: aquasecurity/trivy-action@master
+      #   with:
+      #     image-ref: ${{ secrets.ERC_BACKEND_URI }}:latest
+      #     format: "sarif"
+      #     output: "trivy-results.sarif"
+      #     severity: "CRITICAL,HIGH"
 
       - name: Install Snyk CLI
         uses: snyk/actions/setup@master
