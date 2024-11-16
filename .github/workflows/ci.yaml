@@ -292,8 +292,8 @@ jobs:
           SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
         with:
           file: kubernetes-manifest/
-          args: --sarif --sarif-file-output=manifest.sarif
+          args: --sarif --sarif-file-output=k8s-manifest.sarif
       - name: Upload result to GitHub Code Scanning
         uses: github/codeql-action/upload-sarif@main
         with:
-          sarif_file: manifest.sarif
+          sarif_file: k8s-manifest.sarif
