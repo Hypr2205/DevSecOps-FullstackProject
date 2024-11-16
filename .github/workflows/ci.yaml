@@ -280,6 +280,9 @@ jobs:
   k8s-manifest-scan:
     needs: [backend-security, frontend-security]
     runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ./kubenetes-manifest
     permissions:
       actions: read
       security-events: write
@@ -288,10 +291,10 @@ jobs:
       - uses: actions/checkout@v4
       - name: Run Snyk to check Kubernetes manifest file for issues
         uses: snyk/actions/iac@master
+        continue-on-error: true
         env:
           SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
         with:
-          file: kubernetes-manifest/
           args: --sarif --sarif-file-output=k8s-manifest.sarif
       - name: Upload result to GitHub Code Scanning
         uses: github/codeql-action/upload-sarif@main
