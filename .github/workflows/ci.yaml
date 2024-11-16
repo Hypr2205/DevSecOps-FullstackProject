@@ -265,9 +265,7 @@ jobs:
         run: snyk auth ${{ secrets.SNYK_TOKEN }}
 
       - name: Snyk Container monitor
-        run: |
-          IMAGE_URI=${{ secrets.ERC_BACKEND_URI }}:latest
-          snyk container monitor $IMAGE_URI --file=Dockerfile
+        run: snyk container monitor ${{ secrets.ERC_BACKEND_URI }}:latest --file=Dockerfile
         working-directory: ./backend
 
       - name: Run Snyk to check for vulnerabilities in the Docker image
