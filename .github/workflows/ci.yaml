@@ -183,11 +183,11 @@ jobs:
         id: login-ecr
         uses: aws-actions/amazon-ecr-login@v2
 
-      - run: |
-          IMAGE_TAG=latest
-          REPOSITORY_URI= ${{ secrets.ECR_FRONTEND_URI }} 
-          docker build -t $REPOSITORY_URI:$IMAGE_TAG .
-          docker push $REPOSITORY_URI:$IMAGE_TAG
+      - name: Build image
+        run: docker build -t ${{ secrets.ECR_FRONTEND_URI }}:latest .
+
+      - name: Push image
+        run: docker push ${{ secrets.ECR_FRONTEND_URI }}:latest
 
       - name: Run Trivy vulnerability scanner
         uses: aquasecurity/trivy-action@master
@@ -243,12 +243,10 @@ jobs:
         uses: aws-actions/amazon-ecr-login@v2
 
       - name: Build image
-        working-directory: ./backend
-        run: |
-          IMAGE_TAG=latest
-          REPOSITORY_URI= ${{ secrets.ECR_BACKEND_URI }} 
-          docker build . -t $REPOSITORY_URI:$IMAGE_TAG
-          docker push $REPOSITORY_URI:$IMAGE_TAG
+        run: docker build -t ${{ secrets.ECR_BACKEND_URI }}:latest .
+
+      - name: Push image
+        run: docker push ${{ secrets.ECR_BACKEND_URI }}:latest
 
       - name: Run Trivy vulnerability scanner
         uses: aquasecurity/trivy-action@master
